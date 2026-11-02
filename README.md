@@ -40,47 +40,58 @@ This project is designed to aid in quick decision-making during earthquake disas
 
 ```mermaid
 flowchart TD
-    A([User opens app<br/>localhost:5000]) --> B["Home page"]
-    B --> C{"Registered?"}
-    C -- No --> D["Register<br/>name, password, phone, email"]
-    D --> E[("SQLite<br/>user_data.db<br/>hashed password")]
-    D --> F
-    C -- Yes --> F["Login"]
-    F --> G{"Credentials<br/>valid?"}
-    G -- No --> F
-    G -- Yes --> H["Dashboard"]
+    USER([Authorized User]) --> AUTH["Authentication<br/>Register / Login"]
+    AUTH <--> DB[("User Database<br/>SQLite")]
+    AUTH --> DASH["Control Dashboard"]
 
-    H --> P1
-    H --> C1
-    H --> R1
+    DASH --> EQ1
+    DASH --> AI1
+    DASH --> CM1
 
-    subgraph PRED ["Earthquake prediction"]
-        P1["Enter destination lat,long<br/>+ 11 seismic parameters"] --> P2["Decision Tree model<br/>model/dtt.pkl"]
-        P2 --> P3{"Earthquake?"}
-        P3 -- "Yes (1)" --> P4["Send Telegram alert<br/>with coordinates"]
-        P4 --> P5["OpenRouteService:<br/>route from base to location"]
-        P5 --> P6["folium map saved to<br/>static/route_map.html"]
-        P6 --> P7["Show result + route map"]
-        P3 -- "No (0)" --> P8["Show 'No Earthquake'"]
+    subgraph EQ ["Earthquake Prediction"]
+        direction TB
+        EQ1["Seismic Parameters<br/>& Target Location"] --> EQ2["Decision Tree<br/>Classifier"]
+        EQ2 --> EQ3{"Earthquake<br/>Detected?"}
+        EQ3 -- No --> EQ4["Report Safe Status"]
+        EQ3 -- Yes --> EQ5["Emergency Route<br/>Planning"]
     end
 
-    subgraph CHAT ["AI chatbot"]
-        C1["User asks a question"] --> C2["Google Gemini<br/>generates answer"]
-        C2 --> C3{"Query mentions a<br/>condition in data.csv?"}
-        C3 -- Yes --> C4["Suggest nearby hospital<br/>+ Google Maps link"]
-        C3 -- No --> C5["Show answer only"]
+    subgraph AI ["AI Assistance"]
+        direction TB
+        AI1["User Query"] --> AI2["Response<br/>Generation"]
+        AI2 --> AI3["Hospital<br/>Recommendation"]
     end
 
-    subgraph CROWD ["Crowd detection"]
-        R1["Start crowd.py<br/>webcam feed"] --> R2["YOLOv5 person detection<br/>best.pt"]
-        R2 --> R3{"Person count"}
-        R3 -- "≤ 3" --> R4["No crowd"]
-        R3 -- "4–5" --> R5["Moderate crowd<br/>Telegram: 1 rescue team"]
-        R3 -- "6–10" --> R6["High crowd<br/>Telegram: 2 rescue teams"]
-        R3 -- "> 10" --> R7["High crowd<br/>Telegram: count ÷ 4 teams"]
-        R4 & R5 & R6 & R7 --> R2
+    subgraph CM ["Crowd Monitoring"]
+        direction TB
+        CM1["Live Camera Feed"] --> CM2["Person Detection"]
+        CM2 --> CM3{"Crowd<br/>Density"}
+        CM3 -- Low --> CM2
+        CM3 -- "Moderate / High" --> CM4["Rescue Team<br/>Estimation"]
     end
+
+    EQ5 -.- ORS[["OpenRouteService"]]
+    AI2 -.- GEM[["Google Gemini"]]
+    CM2 -.- YOLO[["YOLOv5"]]
+
+    EQ3 -- Yes --> ALERT
+    CM4 --> ALERT
+    ALERT["Emergency Alert<br/>to Authorities<br/>(Telegram)"]
+
+    classDef user fill:#1f4e79,stroke:#1f4e79,color:#ffffff
+    classDef process fill:#e8f0fa,stroke:#2f6fb3,color:#10243d
+    classDef decision fill:#fff4e0,stroke:#c98a1b,color:#3d2a06
+    classDef external fill:#eeeeee,stroke:#777777,color:#222222
+    classDef alert fill:#b3261e,stroke:#b3261e,color:#ffffff
+
+    class USER user
+    class AUTH,DASH,EQ1,EQ2,EQ4,EQ5,AI1,AI2,AI3,CM1,CM2,CM4 process
+    class EQ3,CM3 decision
+    class DB,ORS,GEM,YOLO external
+    class ALERT alert
 ```
+
+The system has three modules, all reached from one dashboard after login. **Earthquake Prediction** classifies seismic readings and, when an earthquake is detected, plans an emergency route to the location. **AI Assistance** answers queries and recommends hospitals. **Crowd Monitoring** watches a live camera feed and estimates how many rescue teams a crowd needs. Earthquake detections and moderate or high crowds both trigger a Telegram alert to authorities.
 
 ---
 
