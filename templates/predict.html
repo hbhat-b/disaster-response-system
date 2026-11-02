@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="og:title" content="Disaster Prediction">
+    <meta name="author" content="Venkata Sreeram">
+    <meta name="og:image" content="static/logo1.png">
+    <meta name="Keywords" content="Flask, Machine Learning, Deep Learning, AI, Web Development">
+    <meta name="description" content="A Machine Learning and Deep Learning based webapp for Disaster Prediction.">
+    <title>Disaster Prediction</title>
+    <link rel="icon" href="{{ url_for('static', filename = 'logo1.png') }}" type="image/png">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+    <style>
+        body {
+            background-image: url('https://img.freepik.com/premium-vector/emergency-ekg-monitoring-blue-glowing-neon-heart-pulse-heart-beat-electrocardiogram_322958-842.jpg'); 
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            color: white;
+            font-family: 'Arial', sans-serif;
+        }
+        .navbar {
+            background: rgba(0, 0, 0, 0.8) !important;
+        }
+        .container-main {
+            margin-top: 100px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+        }
+        h1 {
+            color: burlywood;
+        }
+        .btn-primary, .btn-info {
+            border-radius: 25px;
+            font-size: 18px;
+            padding: 10px 20px;
+        }
+        .warning-text {
+            color: #ff4444;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <a class="navbar-brand" href="{{ url_for('home') }}">Disaster Prediction</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                {% if status in ['Earth Quake Detected', 'EarthQuake Detected', 'Earthquake Detected'] %}
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('crowd') }}">Crowd Check</a></li>
+                {% endif %}
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container text-center">
+        <div class="container-main">
+            <h1 class="display-4">Status of the Input: <br> {{status}} !!!!</h1>
+            <a href="{{ url_for('fetalPage') }}" class="btn btn-primary mt-3">Recheck</a>
+        </div>
+        
+        {% if status in ['Earth Quake Detected', 'EarthQuake Detected', 'Earthquake Detected'] %}
+        <hr><br><br><br><br>
+        <h3>Navigation For Safe Location</h3>
+        <div class="mt-5">
+            <iframe src="{{ url_for('static', filename='route_map.html') }}" width="60%" height="300px" style="border-radius: 35px;"></iframe>
+            <br>
+            <a href="{{ url_for('static', filename='route_map.html') }}" class="btn btn-info mt-3" target="_blank">Open in New Tab</a>
+        </div>
+        {% endif %}
+    </main>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Disaster Insight</title>
+    
+    <!-- Bootstrap & FontAwesome -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    
+    <!-- Custom Styles -->
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
+    <link rel="icon" href="{{ url_for('static', filename='logo1.png') }}" type="image/png">
+    
+    <style>
+        body {
+            background-color: aliceblue;
+        }
+
+        .navbar {
+            background-color: #343a40 !important;
+        }
+
+        .navbar a {
+            color: white !important;
+            font-weight: bold;
+            
+        }
+
+        #chat-container {
+            background-color: white;
+            height: 75vh;
+            overflow-y: auto;
+            border-radius: 10px;
+            padding: 15px;
+        }
+
+        .chat-box {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message {
+            max-width: 75%;
+            padding: 10px;
+            border-radius: 10px;
+            margin: 5px 0;
+            word-wrap: break-word;
+        }
+
+        .user-message {
+            align-self: flex-end;
+            background-color: #dcf8c6;
+        }
+
+        .bot-message {
+            align-self: flex-start;
+            background-color: #e9ecef;
+        }
+
+        form {
+            display: flex;
+            margin-top: 10px;
+        }
+
+        textarea {
+            flex-grow: 1;
+            margin-right: 10px;
+            border-radius: 10px;
+        }
+
+        .btn-submit {
+            background-color: #28a745;
+            color: white;
+            border-radius: 10px;
+            padding: 8px 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand;margin-left:50px" href="{{ url_for('home') }}">Disaster Response System</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('fetalPage') }}">Disaster Prediction</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('crowd') }}">Crowd Check</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Chat Section -->
+    <div class="container mt-5 pt-4">
+        <div class="row">
+            <div class="col-lg-12">
+                <center><h3 style="color: #2f2b77;">CHAT BOT</h3></center>
+                <div id="chat-container">
+                    <div class="chat-box">
+                        {% if chat_history %}
+                            {% for row in chat_history %}
+                                <div class="message user-message">
+                                    <p>{{ row[0] }}</p>
+                                </div>
+                                <div class="message bot-message">
+                                    {% for msg in row[1] %}
+                                        <p>{% if ":" in msg %}<b>{{ msg }}</b>{% else %}{{ msg }}{% endif %}</p>
+                                    {% endfor %}
+                                    {% if status and loop.last %}
+                                        <hr>
+                                        <p><b>Status:</b> {{ status }}</p>
+                                        <p><b>Suggested Doctor:</b> {{ name }}</p>
+                                        <p><b>Location:</b> <a href="{{ Link }}" target="_blank">Click here</a></p>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Input Form -->
+                <form method="post" action="/analyse">
+                    <textarea class="form-control" name="query" placeholder="Enter query" required></textarea>
+                    <button type="submit" class="btn btn-submit">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#chat-container").scrollTop($("#chat-container")[0].scrollHeight);
+        });
+    </script>
+
+</body>
+</html>

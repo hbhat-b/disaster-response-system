@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="og:title" content="Disaster Insight">
+  <meta name="author" content="Venkata Sreeram">
+  <meta name="og:image" content="static/logo1.png">
+  <meta name="Keywords" content="Flask, Machine Learning, Deep Learning, Artificial Intelligence, AI, ML,DL, Web Development">
+  <meta name="description" content="A Machine Learning and Deep Learning based webapp for Multiple Disease Prediction.">
+  <title>Disaster Insight</title>
+  <link rel="icon" href="{{ url_for('static', filename = 'logo1.png') }}" type="image/icon type">
+  <p> Disaster Insight </p>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/sticky-footer/">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  
+ 
+  <style>
+    body
+    {
+    background-image: url('static/crowd.jpg'); 
+    background-size: 100% 100vh; 
+    background-repeat: no-repeat;
+
+    }
+    #chat{
+				position: fixed;
+				bottom: 50px;
+				right: 50px;
+        color: white;
+			}
+      .li-item{
+        list-style-type: none;
+        color: black;
+      }
+
+      
+  </style>
+
+</head>
+<body>
+	<nav class="navbar navbar-expand-sm navbar-dark fixed-top bg-dark" style="background-color: black !important;">
+        <a style="text-decoration: none; color: white" href="{{ url_for('home') }}">Disaster Insight</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+           <span class="navbar-toggler-icon"></span>
+         </button>
+         <div class="collapse navbar-collapse" id="navbarNav">
+           <ul class="navbar-nav ml-auto">
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('fetalPage') }}">Disaster Prediction</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('crowd') }}">Crowd Check</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">Logout</a></li>
+           </ul>
+         </div>
+       </nav>
+
+       
+	<br>
+<br>
+<br>
+<br>
+<main>
+	<div class="container-fluid" style="margin-bottom: 50px;">
+<div class="row"  style="margin-bottom: 50px;">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+        <div class="col-lg-12">
+            <center>
+              <img class="rounded-circle" src="https://img.lovepik.com/free-png/20210922/lovepik-cartoon-crowd-png-image_401147854_wh1200.png" alt="Generic placeholder image" width="80" height="80">
+        </center>
+        <center><h1 style="color:black;">Crowd Detection</h1></center> 
+        <center><h3 style="color: black; ">Click and wait to process the frames</h3></center> 
+        <div class="card card-body" style="border: 1px solid black;">
+            <!-- \https://cdn-icons-png.flaticon.com/512/3359/3359081.png -->
+            <form class="form-horizontal" action="{{ url_for('crowd') }}" method="POST">
+                
+                
+                <input type="submit" class="btn btn-info btn-block" value="Check Crowd in Live" required step="any">
+            </form>
+
+            
+        </div>
+    </div>
+    <div class="col-md-2"></div>
+</div> 
+
+<div id="chat">
+  <a href="/chatbot"><img src="data:image/png;base64,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" style="width: 50px;cursor: pointer;"></a>
+</div>
+
+</main>
+</body>
+</html>
