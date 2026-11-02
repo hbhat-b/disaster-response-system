@@ -36,6 +36,54 @@ This project is designed to aid in quick decision-making during earthquake disas
 
 ---
 
+### 🔄 Workflow
+
+```mermaid
+flowchart TD
+    A([User opens app<br/>localhost:5000]) --> B["Home page"]
+    B --> C{"Registered?"}
+    C -- No --> D["Register<br/>name, password, phone, email"]
+    D --> E[("SQLite<br/>user_data.db<br/>hashed password")]
+    D --> F
+    C -- Yes --> F["Login"]
+    F --> G{"Credentials<br/>valid?"}
+    G -- No --> F
+    G -- Yes --> H["Dashboard"]
+
+    H --> P1
+    H --> C1
+    H --> R1
+
+    subgraph PRED ["Earthquake prediction"]
+        P1["Enter destination lat,long<br/>+ 11 seismic parameters"] --> P2["Decision Tree model<br/>model/dtt.pkl"]
+        P2 --> P3{"Earthquake?"}
+        P3 -- "Yes (1)" --> P4["Send Telegram alert<br/>with coordinates"]
+        P4 --> P5["OpenRouteService:<br/>route from base to location"]
+        P5 --> P6["folium map saved to<br/>static/route_map.html"]
+        P6 --> P7["Show result + route map"]
+        P3 -- "No (0)" --> P8["Show 'No Earthquake'"]
+    end
+
+    subgraph CHAT ["AI chatbot"]
+        C1["User asks a question"] --> C2["Google Gemini<br/>generates answer"]
+        C2 --> C3{"Query mentions a<br/>condition in data.csv?"}
+        C3 -- Yes --> C4["Suggest nearby hospital<br/>+ Google Maps link"]
+        C3 -- No --> C5["Show answer only"]
+    end
+
+    subgraph CROWD ["Crowd detection"]
+        R1["Start crowd.py<br/>webcam feed"] --> R2["YOLOv5 person detection<br/>best.pt"]
+        R2 --> R3{"Person count"}
+        R3 -- "≤ 3" --> R4["No crowd"]
+        R3 -- "4–5" --> R5["Moderate crowd<br/>Telegram: 1 rescue team"]
+        R3 -- "6–10" --> R6["High crowd<br/>Telegram: 2 rescue teams"]
+        R3 -- "> 10" --> R7["High crowd<br/>Telegram: count ÷ 4 teams"]
+        R4 & R5 & R6 & R7 --> R2
+    end
+```
+
+---
+
 ### ⚙️ Installation
 
 **Prerequisites:**
